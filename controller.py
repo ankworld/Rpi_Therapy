@@ -1,5 +1,5 @@
 import setting
-from lib import controlcore
+from myLib import controlcore
 
 
 class Control(object):

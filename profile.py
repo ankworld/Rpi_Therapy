@@ -1,11 +1,11 @@
 import configparser
 import os
-from symbol import argument
 
 
 class Profile(object):
     def __init__(self):
-        self.path = os.path.dirname(os.path.abspath(__file__)) + "/config/profile/"
+        self.path = os.path.dirname(
+            os.path.abspath(__file__)) + "/config/profile/"
         self.cfg = configparser.ConfigParser()
         if os.path.isdir(self.path):
             pass
@@ -28,6 +28,7 @@ class Profile(object):
     """
     :arg file = abspath
     """
+
     def read_config(self, file):
         self.cfg.read(file)
         list_config = [self.cfg['profile']['section1'],
@@ -39,6 +40,7 @@ class Profile(object):
     load all file in path = config/profile
     :return list of file(abspath) in config/profile
     """
+
     def load_file(self):
         list_file = []
         for file in os.listdir(self.path):

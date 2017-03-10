@@ -22,6 +22,7 @@ __author__ = 'Anukul Thienkasemsuk (anukul_thienkasemsuk@hotmail.com)'
 
 # FIXME: Auto start
 
+# TODO: Complete This Class
 class ThreadingCounter(QThread):
     limit = 2
     times = 0

@@ -2,7 +2,7 @@ import sys
 import configparser
 import re
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QGroupBox, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QGroupBox
 from ui import controlpanel
 
 
@@ -135,7 +135,8 @@ class Ui(object):
                 elif reg_name == "freqPin":
                     self.freq = item.text()
 
-            list_of_pin = [self.high_pin, self.low_pin, self.pwm_pin, self.freq]
+            list_of_pin = [self.high_pin,
+                           self.low_pin, self.pwm_pin, self.freq]
             Config().write_config_file(section, list_of_pin)
 
     def save_sensor(self):
@@ -185,7 +186,7 @@ class Ui(object):
                         item.setText(str(value[2]))
                     elif reg_name == "freqPin":
                         item.setText(str(value[3]))
-##################################################################################################
+##########################################################################
         # Load to sensor section
         section = "Sensor"
         value = Config().read_config_sensor(section)
