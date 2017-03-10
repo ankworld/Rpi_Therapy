@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ControlPanelMW</class>
+ <widget class="QMainWindow" name="ControlPanelMW">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>603</width>
+    <height>471</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ControlPanel</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout">
+    <item row="3" column="0" colspan="2">
+     <widget class="QPushButton" name="saveAll">
+      <property name="text">
+       <string>Save All Config</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Motor 1</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="freqPinM1">
+           <property name="placeholderText">
+            <string>Freq</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="highPinM1">
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string>High Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lowPinM1">
+           <property name="placeholderText">
+            <string>Low Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="pwmPinM1">
+           <property name="placeholderText">
+            <string>PWM Pin</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveMotor1">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QPushButton" name="loadAll">
+      <property name="text">
+       <string>Load Current Config</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Motor 2</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_9">
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="highPinM2">
+           <property name="placeholderText">
+            <string>High Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lowPinM2">
+           <property name="placeholderText">
+            <string>Low Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="pwmPinM2">
+           <property name="placeholderText">
+            <string>PWM Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="freqPinM2">
+           <property name="placeholderText">
+            <string>Freq</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveMotor2">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="1" rowspan="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>Sensor Group</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_14">
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="input2">
+           <property name="placeholderText">
+            <string>Sensor 2 Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="input3">
+           <property name="placeholderText">
+            <string>Sensor 3 Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="input4">
+           <property name="placeholderText">
+            <string>Sensor 4 Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="input1">
+           <property name="placeholderText">
+            <string>Sensor 1 Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="input5">
+           <property name="placeholderText">
+            <string>Sensor 5 Pin</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="input6">
+           <property name="placeholderText">
+            <string>Sensor 6 Pin</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveSensor">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>highPinM1</tabstop>
+  <tabstop>lowPinM1</tabstop>
+  <tabstop>pwmPinM1</tabstop>
+  <tabstop>freqPinM1</tabstop>
+  <tabstop>saveMotor1</tabstop>
+  <tabstop>highPinM2</tabstop>
+  <tabstop>lowPinM2</tabstop>
+  <tabstop>pwmPinM2</tabstop>
+  <tabstop>freqPinM2</tabstop>
+  <tabstop>saveMotor2</tabstop>
+  <tabstop>input1</tabstop>
+  <tabstop>input2</tabstop>
+  <tabstop>input3</tabstop>
+  <tabstop>input4</tabstop>
+  <tabstop>saveSensor</tabstop>
+  <tabstop>saveAll</tabstop>
+  <tabstop>loadAll</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,36 @@
+[Motor 1]
+hpin = 11
+lpin = 13
+pwmpin = 15
+freqpin = 10000
+
+[Motor 2]
+hpin = 19
+lpin = 21
+pwmpin = 23
+freqpin = 10000
+
+[Motor 3]
+hpin = 29
+lpin = 31
+pwmpin = 33
+freqpin = 10000
+
+[Motor 4]
+hpin = 8
+lpin = 10
+pwmpin = 12
+freqpin = 10000
+
+[Motor 5]
+hpin = 16
+lpin = 18
+pwmpin = 22
+freqpin = 10000
+
+[Motor 6]
+hpin = 36
+lpin = 38
+pwmpin = 40
+freqpin = 10000
+
