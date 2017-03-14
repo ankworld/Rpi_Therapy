@@ -6,12 +6,12 @@ body {
     font-size: 100%;
     word-wrap: break-word;
     margin: 0px auto;
-    background-color: azure;
+    background-color: #f0ffff;
 }
 
 .titlebar {
     display: flex;
-    /*position: fixed;*/
+    position: fixed;
     font-size: 1em;
     font-weight: 400;
     border: 0;
@@ -24,9 +24,9 @@ body {
 }
 
 .intro {
-  margin: 0;
-  min-width: 200px;
-  font-size: 16pt;
+    margin: 0;
+    min-width: 200px;
+    font-size: 16pt;
 }
 
 nav {
@@ -54,12 +54,129 @@ nav li {
 }
 
 .dash_section {
-  height: 70vh;
-  width: 80%;
-  border: 1px solid black;
-  border-radius: 10px;
-  margin: 0 auto;
-  margin-top: 50pt;
-  padding: 20px;
-  background-color: silkcorn;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 80%;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 0 auto;
+    margin-top: 70pt;
+    padding: 20px;
+    background-color: #fffff0;
+    box-shadow: 5px 5px 7px -2px rgba(0, 0, 0, 0.75);
+}
+
+#idle {
+    align-self: center;
+    flex-grow: 1;
+    font-size: 96pt;
+    text-align: center;
+}
+
+.add_profile {
+    justify-content: center;
+    display: flex;
+    flex-grow: 1;
+}
+
+.add_profile legend {
+    font-size: 16pt;
+    font-weight: 800;
+}
+
+.row {
+    margin-top: 10px;
+}
+
+input[type=text] {
+    margin: 0 10px;
+    padding: 5px;
+    border: 1px solid #000;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input[type=text]:focus {
+    border-color: #f0ffff;
+}
+
+button[type=button] {
+    border: 1px solid #000000;
+    color: #f0ffff;
+    background: #0080f0;
+    min-width: 100px;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+button[type=button]:hover {
+    background: #008080;
+}
+
+button[type=submit] {
+    border: 1px solid #f44c0e;
+    color: #f0ffff;
+    background: #000080;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+button[type=submit]:hover {
+    background: #008080;
+}
+
+button[type=reset] {
+    border: 1px solid #f44c0e;
+    color: #f0ffff;
+    background: #800000;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+button[type=reset]:hover {
+    background: #008080;
+}
+
+.article {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.search_field {
+    width: 100%;
+}
+
+.ul_profile {
+    width: 100%;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-width: 50%;
+    -moz-column-width: 50%;
+    column-width: 50%;
+    /*-webkit-column-gap: 4em;
+    -moz-column-gap: 4em;
+    column-gap: 4em;*/
+}
+
+.list_profile {
+    width: 90%;
+    text-align: left;
+    list-style: none;
+    margin-bottom: 10px;
+    /*margin-top: 10px;*/
+}
+
+.list_profile p {
+    font-size: 14pt;
+}
+
+.list_profile h1 {
+    font-size: 18pt;
+}
+
+.list_profile button {
+    text-align: left;
+    width: 100%;
 }

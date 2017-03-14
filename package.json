@@ -1,0 +1,25 @@
+{
+  "name": "rpi_therapy",
+  "version": "1.0.0",
+  "description": "Rri_Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankworld/Rpi_Therapy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ankworld/Rpi_Therapy/issues"
+  },
+  "homepage": "https://github.com/ankworld/Rpi_Therapy#readme",
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-standard": "^7.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1"
+  }
+}

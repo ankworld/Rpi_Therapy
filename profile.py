@@ -18,12 +18,16 @@ class Profile(object):
         self.cfg['profile']['section2'] = section[1]
         self.cfg['profile']['speed'] = spd
 
-    def write_config(self):
+    def write_config(self, name="profile"):
         i = 0
-        while os.path.exists(self.path + "profile%s.ini" % i):
+        while os.path.exists(self.path + '{0}{1}.ini'.format(name, i)):
             i += 1
-        with open(self.path + 'profile%s.ini' % i, 'w') as config_file:
-            self.cfg.write(config_file)
+        if name == "profile":
+            with open(self.path + '{0}{1}.ini'.format(name, i), 'w') as config_file:
+                self.cfg.write(config_file)
+        else:
+            with open(self.path + '{0}.ini'.format(name), 'w') as config_file:
+                self.cfg.write(config_file)
 
     """
     :arg file = abspath
@@ -41,9 +45,12 @@ class Profile(object):
     :return list of file(abspath) in config/profile
     """
 
-    def load_file(self):
+    def load_file(self, option="full"):
         list_file = []
         for file in os.listdir(self.path):
-            list_file.append(self.path + file)
+            if option == "full":
+                list_file.append(self.path + file)
+            elif option == "file":
+                list_file.append(file)
         list_file.sort()
         return list_file

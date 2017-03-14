@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html"%} {% block head %} {{super()}} {% endblock %}
+
+<body>
+    {% block header %} {{super()}} {% endblock %} {% block dash_content %} {% block add %}
+    <form class="add_profile" action="/add_profile" method="post">
+        <fieldset>
+            <legend>รายการ</legend>
+            <div class="row">
+                ชื่อ : <input type="text" name="name">
+            </div>
+            <div class="row">ส่วนที่ 1 :
+                <input type="text" name="round1">ครั้ง
+                <!-- <input type="text" name="time1">นาที -->
+            </div>
+            <div class="row">ส่วนที่ 2 :
+                <input type="text" name="round2">ครั้ง
+                <!-- <input type="text" name="time2">นาที -->
+            </div>
+            <div class="row">ความเร็ว :
+                <input type="text" name="speed">%
+            </div>
+            <div class="row">
+                <button type="submit" name="button">บันทึก</button>
+                <button type="reset" name="button">รีเซท</button>
+            </div>
+
+        </fieldset>
+    </form>
+    {% endblock %} {% endblock %}
+
+</body>
+
+</html>
