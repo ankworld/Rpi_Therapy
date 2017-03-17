@@ -3,5 +3,9 @@
     "plugins": [
         "standard",
         "promise"
-    ]
+    ],
+
+    "env": {
+    "browser": 1
+  }
 }

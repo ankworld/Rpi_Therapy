@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, url_for, redirect
-import profile
+# -*- coding: utf-8 -*-
 
+from flask import Flask, render_template, request, url_for, redirect
+# import controller
+import profile
 app = Flask(__name__)
 
 
@@ -33,10 +35,10 @@ def add_profile():
 
 @app.route('/select_profile_page')
 def load_select_profile_page():
-    return render_template('select_profile.html')
+    return render_template('select_profile.html', file=list_profile())
 
 
-@app.route('/list_profile')
+@app.route('/list_profile', methods=['POST'])
 def list_profile():
     profile_manager = profile.Profile()
     full_list = profile_manager.load_file()
@@ -44,8 +46,20 @@ def list_profile():
     obj = {}
     for i in range(len(list_file)):
         obj[list_file[i]] = profile_manager.read_config(full_list[i])
-    return "opoopo"
+    return obj
+
+
+@app.route('/active', methods=['POST'])
+def active():
+    data = request.data.decode('utf8')
+    profile_manager = profile.Profile()
+    # full_list = profile_manager.load_file()
+    list_file = profile_manager.load_file(option="file")
+    for item in list_file:
+        if data + ".ini" == item:
+            return item
 
 
 if __name__ == '__main__':
+    # control = controller.Control()
     app.run(debug=True, host='0.0.0.0')

@@ -4,25 +4,25 @@
 
 <body>
     {% block header %} {{super()}} {% endblock %} {% block dash_content %}
-
     <h1 class="article">Profile</h1>
     <span>ค้นหาด้วยชื่อ : </span>
-    <span><input class="search_field" type="text" name="search" value="" onkeyup="search()"></span>
+    <span><input class="search_field" type="text" name="search" value="" onkeypress="handleKeyPress(event)"></span>
     <ul class="ul_profile">
-      {{HI}}
         {% for key, value in file.items() %} {% set file_name = key.split('.') %}
         <li class="list_profile">
-            <button type="button" name="button">
-              <h1>{{file_name[0]}}</h1>
-              <p>ส่วนที่ 1 : {{value[0]}} ครั้ง</p>
-              <p>ส่วนที่ 1 : {{value[1]}} ครั้ง</p>
-              <p>ความเร็ว : {{value[2]}} %</p>
+            <section>
+                <h1>{{file_name[0]}}</h1>
+                <p>ส่วนที่ 1 : {{value[0]}} ครั้ง</p>
+                <p>ส่วนที่ 2 : {{value[1]}} ครั้ง</p>
+                <p>ความเร็ว : {{value[2]}} %</p>
+            </section>
+            <button type="button" name="button" onclick="active(event)">
+            Select
             </button>
         </li>
         {% endfor %}
     </ul>
     {% endblock %}
-
 </body>
 
 </html>
