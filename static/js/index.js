@@ -28,12 +28,13 @@ function search () {
 
 function active (e) {
   let selectProfile = e.path[1].getElementsByTagName('section')[0].getElementsByTagName('h1')[0].innerHTML
-  // console.log(selectProfile)
+    // console.log(selectProfile)
   const xmlhttp = new XMLHttpRequest()
   xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       if (xmlhttp.status === 200) {
         console.log(xmlhttp.responseText)
+        window.location = xmlhttp.responseText
       } else if (xmlhttp.status === 400) {
         alert('There was an error 400')
       } else {
@@ -43,4 +44,43 @@ function active (e) {
   }
   xmlhttp.open('POST', '/active')
   xmlhttp.send(selectProfile)
+}
+
+function shutdown () {
+  var r = confirm('Press a button')
+  if (r === true) {
+    const xmlhttp = new XMLHttpRequest()
+    xmlhttp.onreadystatechange = () => {
+      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+        if (xmlhttp.status === 200) {
+          console.log(xmlhttp.responseText)
+        } else if (xmlhttp.status === 400) {
+          alert('There was an error 400')
+        } else {
+          alert('something else other than 200 was returned')
+        }
+      }
+    }
+    xmlhttp.open('POST', '/shutdown')
+    xmlhttp.send()
+  }
+}
+
+function updateProcess () {
+  const xmlhttp = new XMLHttpRequest()
+  xmlhttp.onreadystatechange = () => {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+      if (xmlhttp.status === 200) {
+        console.log(xmlhttp.responseText)
+        var percent = xmlhttp.responseText
+        document.getElementById('status').innerHTML = percent + ' %'
+      } else if (xmlhttp.status === 400) {
+        alert('There was an error 400')
+      } else {
+        alert('something else other than 200 was returned')
+      }
+    }
+  }
+  xmlhttp.open('POST', '/get_process')
+  xmlhttp.send()
 }

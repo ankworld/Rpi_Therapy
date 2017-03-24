@@ -3,8 +3,14 @@
 {% extends "base.html"%} {% block head %} {{super()}} {% endblock %}
 
 <body>
-    {% block header %} {{super()}} {% endblock %} {% block dash_content %}
-    <h1 id='idle'>ว่าง</h1> {% endblock %}
+    {% block jsscript %}
+    <script type="text/javascript">
+        setInterval(function() {
+            updateProcess()
+        }, 1000);
+    </script>
+    {% endblock %} {% block header %} {{super()}} {% endblock %} {% block dash_content %}
+    <h1 id='status'>ว่าง</h1> {% endblock %}
 
 </body>
 

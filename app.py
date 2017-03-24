@@ -7,7 +7,6 @@ import datetime as dt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
-from time import sleep
 import controller
 import profile
 from ui import stack_menu
@@ -16,29 +15,11 @@ from ui import stack_menu
 This main function of this project
 """
 
-__version__ = '0.2'
+__version__ = '0.3'
 __author__ = 'Anukul Thienkasemsuk (anukul_thienkasemsuk@hotmail.com)'
 
 
 # FIXME: Auto start
-
-# TODO: Complete This Class
-class ThreadingCounter(QThread):
-    limit = 2
-    times = 0
-
-    def __init__(self):
-        QThread.__init__(self)
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        while self.times < self.limit:
-            sleep(1)
-            self.times += 1
-        return True
-
 
 class ThreadingTime(QThread):
     update_time = pyqtSignal(dt.datetime)
@@ -67,41 +48,8 @@ class ThreadingProcess(QThread):
     def __del__(self):
         self.wait()
 
-    def action_1(self):
-        finished_round = False
-        self.control.motor1.change_duty(100)
-        self.control.motor1.cw_drive()
-        sleep(0.1)
-        self.control.motor1.change_duty(float(self.config[2]))
-        while not finished_round:
-            print("SensorUp = ", self.control.sensor5.get_value(),
-                  " & ", self.control.sensor6.get_value())
-            if not self.control.sensor5.get_value() and not self.control.sensor6.get_value():
-                self.control.motor1.stop()
-                sleep(2)
-                self.control.motor1.change_duty(100)
-                self.control.motor1.ccw_drive()
-                sleep(0.1)
-                self.control.motor1.change_duty(float(self.config[2]))
-            elif not self.control.sensor3.get_value() and not self.control.sensor4.get_value():
-                self.control.motor1.stop()
-                sleep(2)
-                finished_round = True
-
-    def action_2(self):
-        pass
-
     def run(self):
-        self.control.motor1.change_duty(float(self.config[2]))
-        self.control.motor2.change_duty(float(self.config[2]))
-
-        for i in range(int(self.config[0])):
-            self.action_1()
-            self.update_sig.emit()
-
-        for i in range(int(self.config[1])):
-            self.action_2()
-            self.update_sig.emit()
+        pass
 
 
 class Ui(object):
@@ -181,9 +129,6 @@ class Ui(object):
     # stop all motor and stage to default
     def set_page_main(self):
         self.ui.stackedWidget.setCurrentIndex(0)
-        self.s1_stage = 0
-        self.s2_stage = 0
-        self.cc.stop_all()
 
     # set profile page ans load list
     def set_page_profile(self):
@@ -206,48 +151,7 @@ class Ui(object):
         self.ui.stackedWidget.setCurrentIndex(3)
 
     def set_page_process(self):
-        # Get profile list that return from select_profile()
-        load_profile_list = self.select_profile()
-        self.logger.info("Active profile : " +
-                         " section 1 " + str(load_profile_list[0]) + "times" +
-                         " section 2 " + str(load_profile_list[1]) + "times")
-        # Go to next process page when selected profile
-        if load_profile_list is not None:
-            self.ui.stackedWidget.setCurrentIndex(4)
-
-            # Setup progressbar
-            times = int(load_profile_list[0]) + int(load_profile_list[1])
-            self.ui.pg_bar.setMaximum(times - 1)
-            self.ui.pg_bar.setValue(0)
-
-            # Setup Time Threading
-            self.time_thread = ThreadingTime()
-            self.time_thread.update_time.connect(self.update_time)
-            self.time_thread.start()
-
-            # Setup Process Threading
-            self.process_thread = ThreadingProcess(self.cc, load_profile_list)
-            self.process_thread.update_sig.connect(self.update_process)
-            self.process_thread.finished.connect(self.done)
-            self.process_thread.start()
-
-    """
-    cc_s1
-    working in 4 stage = cw -> stop -> ccw -> stop
-    """
-
-    def cc_s1(self):
-        if self.s1_stage == 0:
-            self.logger.info('Section 1 Manual --> Active --> CW')
-            self.cc.motor1.cw_drive()
-            self.s1_stage = 1
-        elif self.s1_stage == 1:
-            self.logger.info('Section 1 Manual --> Active --> CCW')
-            self.cc.motor1.ccw_drive()
-            self.s1_stage = 0
-
-    def change_speed(self):
-        self.cc.motor1.change_duty(self.ui.spb_speed.value())
+        pass
 
     def load_profile_list(self):
         model = QStandardItemModel()
@@ -300,7 +204,8 @@ class Ui(object):
 
     def update_time(self, time_text):
         self.ui.lbl_time.setText(str(
-            time_text.hour) + " : " + str(time_text.minute) + " : " + str(time_text.second))
+            time_text.hour) + " : " + str(time_text.minute) + " : " +
+            str(time_text.second))
 
     def done(self):
         self.logger.info("Done")

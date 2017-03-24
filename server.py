@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+import os
+import subprocess
+import shutil
+import configparser
 
 from flask import Flask, render_template, request, url_for, redirect
+
 # import controller
 import profile
+
 app = Flask(__name__)
 
 
@@ -57,9 +63,39 @@ def active():
     list_file = profile_manager.load_file(option="file")
     for item in list_file:
         if data + ".ini" == item:
-            return item
+            if not check_queue():
+                src = os.path.dirname(os.path.abspath(__file__)) + \
+                    "/config/profile/" + data + ".ini"
+                dest = os.path.dirname(os.path.abspath(
+                    __file__)) + "/queue/work.ini"
+                with open(src, 'r') as fsrc:
+                    with open(dest, 'wb') as fdest:
+                        shutil.copy2(src, dest)
+                return url_for('index')
+            else:
+                return url_for('index')
+
+
+def check_queue():
+    return os.path.exists(os.path.dirname(os.path.abspath(__file__)) +
+                          "/queue/work.ini")
+
+
+@app.route('/shutdown')
+def shutdown():
+    subprocess.call("reboot")
+
+
+@app.route('/get_process', methods=['POST'])
+def get_process():
+    with open(os.path.dirname(os.path.abspath(__file__)) +
+              "/queue/process.ini", 'r') as process_file:
+        cfg.read_file(process_file)
+        success = cfg['process']['success']
+    return success
 
 
 if __name__ == '__main__':
     # control = controller.Control()
+    cfg = configparser.ConfigParser()
     app.run(debug=True, host='0.0.0.0')
