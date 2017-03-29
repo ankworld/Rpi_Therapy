@@ -8,6 +8,7 @@ import controller
 controller = controller.Control()
 
 
+# Read work.ini and doing work
 class thread_working(threading.Thread):
     def __init__(self, threadID, name, work_list):
         threading.Thread.__init__(self)
@@ -54,6 +55,7 @@ class thread_working(threading.Thread):
         controller.motor1.stop()
 
 
+# Write Process File
 class thread_process(threading.Thread):
     def __init__(self, threadID, name, process):
         threading.Thread.__init__(self)
@@ -75,14 +77,20 @@ class thread_process(threading.Thread):
         print("FIN")
 
 
+# Write Status File
 class thread_status(threading):
-    def __init__(self, threadID, name, command):
+    def __init__(self, threadID, name, status, command):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
+
+        """
+        status : inactive(0), active(1)
+        command : working(0), terminate(1), delete(2)
+        """
         self.cfg = configparser.ConfigParser()
         self.cfg['status'] = {}
-        self.cfg['status']['active'] = 0
+        self.cfg['status']['active'] = status
         self.cfg['status']['command'] = command
 
     def run(self):
@@ -91,10 +99,21 @@ class thread_status(threading):
             self.cfg.write(status_file)
 
 
+# Kill thread_working
+class thread_terminate(threading):
+
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.cfg = configparser.ConfigParser()
+
+    def run(self):
+        pass
+
+
 def main():
     profile_manager = profile.Profile()
-
-    # TODO: initial position at start point
 
     """
     check file every 1 second for get job
@@ -106,8 +125,10 @@ def main():
                 os.path.dirname(os.path.abspath(__file__)) +
                 "/queue/work.ini")
             worker = thread_working(1, "Worker", work_list)
+            status = thread_status(3, "Status Writer", 1, 0)
             time.sleep(5)
             worker.start()
+            status.start()
             worker.join()
             os.remove(os.path.dirname(
                 os.path.abspath(__file__)) + "/queue/work.ini")
@@ -116,6 +137,26 @@ def main():
             print("Not Found")
             time.sleep(1)
 
+
+"""
+with open(os.path.dirname(os.path.abspath(__file__)) +
+          "/queue/status.ini", 'r') as status_file:
+    self.cfg.read_file(status_file)
+
+    # status : inactive(0), active(1)
+    # command : working(0), terminate(1), delete(2)
+    active = self.cfg['status']['active']
+    command = self.cfg['status']['command']
+
+    if command == 0:
+
+        pass
+    elif command == 1:
+        pass
+    elif command == 2:
+        pass
+pass
+"""
 
 print("Working at ", os.path.dirname(os.path.abspath(__file__)) +
       "/queue/work.ini")
