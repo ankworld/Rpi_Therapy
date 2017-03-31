@@ -4,10 +4,13 @@ import os
 import logging
 import subprocess
 import datetime as dt
+import configparser
+import time
+from shutil import copyfile
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QThread, pyqtSignal
-import controller
+# import controller
 import profile
 from ui import stack_menu
 
@@ -38,18 +41,21 @@ class ThreadingTime(QThread):
 
 
 class ThreadingProcess(QThread):
-    update_sig = pyqtSignal()
+    update_sig = pyqtSignal(int)
 
-    def __init__(self, control, config):
+    def __init__(self):
         QThread.__init__(self)
-        self.control = control
-        self.config = config
+        self.cfg = configparser.ConfigParser()
 
     def __del__(self):
         self.wait()
 
     def run(self):
-        pass
+        while True:
+            with open(working_path + "/process.ini", 'r') as process_file:
+                self.cfg.read_file(process_file)
+            success = self.cfg['process']['success']
+            self.update_sig.emit(success)
 
 
 class Ui(object):
@@ -72,12 +78,16 @@ class Ui(object):
         self.logger.addHandler(self.handler)
 
         # Control Variable
-        self.cc = controller.Control()
-        self.s1_stage = 0
-        self.s2_stage = 0
+        # self.cc = controller.Control()
+        # self.s1_stage = 0
+        # self.s2_stage = 0
 
         # Profile control
         self.profile_ctl = profile.Profile()
+
+        # Create Threading
+        self.process_thread = ThreadingProcess()
+        self.time_thread = ThreadingTime()
 
         # initial UI
         self.MainWindow = QMainWindow()
@@ -98,19 +108,22 @@ class Ui(object):
         # Manual Control Page
         self.ui.btn_man.clicked.connect(self.set_page_manual)
         self.ui.btn_man_back.clicked.connect(self.set_page_main)
-        self.ui.btn_man_s1.clicked.connect(self.cc_s1)
+        """
+        Disable manual for a while
+        """
+        # self.ui.btn_man_s1.clicked.connect(self.cc_s1)
         # self.ui.btn_man_s2.clicked.connect(self.cc_s2)
-        self.ui.spb_speed.valueChanged.connect(self.change_speed)
+        # self.ui.spb_speed.valueChanged.connect(self.change_speed)
 
         # Temp Config Button
         self.ui.btn_shutdown.clicked.connect(self.shutdown)
 
         self.ui.pushButton.clicked.connect(self.terminate_thread)
 
-        self.MainWindow.show()
+        # self.MainWindow.show()
 
         self.logger.info("Start System")
-        # self.MainWindow.showFullScreen()
+        self.MainWindow.showFullScreen()
 
     # Power off raspberry pi
     @staticmethod
@@ -123,7 +136,12 @@ class Ui(object):
             self.process_thread.terminate()
             self.time_thread.terminate()
             self.ui.stackedWidget.setCurrentIndex(0)
-            self.cc.stop_all()
+            # TODO: Write Command "1" to status.ini
+            cfg = configparser.ConfigParser()
+            cfg['status']['command'] = 1
+            with open(working_path + "/status", 'r') as status_file:
+                cfg.write(status_file)
+            # self.cc.stop_all()
 
     # set main page
     # stop all motor and stage to default
@@ -135,6 +153,7 @@ class Ui(object):
         self.ui.stackedWidget.setCurrentIndex(1)
         self.load_profile_list()
 
+    # set add profile page
     def set_page_add_profile(self):
         self.ui.stackedWidget.setCurrentIndex(2)
 
@@ -147,11 +166,19 @@ class Ui(object):
         self.set_page_profile()
 
     def set_page_manual(self):
-        self.cc.motor1.change_duty(self.ui.spb_speed.value())
+        # self.cc.motor1.change_duty(self.ui.spb_speed.value())
         self.ui.stackedWidget.setCurrentIndex(3)
 
     def set_page_process(self):
-        pass
+        if os.path.exists(working_path + "/work.ini"):
+            self.ui.stackedWidget.setCurrentIndex(4)
+        else:
+            copyfile(self.select_profile, working_path + "/work.ini")
+            self.ui.stackedWidget.setCurrentIndex(4)
+        self.process_thread.start()
+        self.process_thread.update_sig.connect(self.update_process)
+        self.time_thread.start()
+        self.time_thread.update_time.connect(self.update_time)
 
     def load_profile_list(self):
         model = QStandardItemModel()
@@ -189,18 +216,24 @@ class Ui(object):
         self.load_profile_list()
 
     def select_profile(self):
+        # NOTE: If fail change load_file() mode to full
         # load all file in config/profile
         list_file = self.profile_ctl.load_file()
         indexes = self.ui.tbv_profile.selectionModel().selectedRows()
         for index in sorted(indexes):
             for file in list_file:
                 if os.path.basename(file) == index.data():
-                    list_config = self.profile_ctl.read_config(file)
+                    # list_config = self.profile_ctl.read_config(file)
                     # return config data that read from selected file
-                    return list_config
+                    # return list_config
+                    return file
 
-    def update_process(self):
-        self.ui.pg_bar.setValue(self.ui.pg_bar.value() + 1)
+    def update_process(self, success):
+        # NOTE: If fail change to string
+        self.ui.pg_bar.setValue(success)
+        if success == 100:
+            time.sleep(2)
+            self.done()
 
     def update_time(self, time_text):
         self.ui.lbl_time.setText(str(
@@ -209,10 +242,13 @@ class Ui(object):
 
     def done(self):
         self.logger.info("Done")
+        self.process_thread.terminate()
+        self.time_thread.terminate()
         self.set_page_main()
 
 
 if __name__ == "__main__":
+    working_path = os.path.dirname(os.path.abspath(__file__)) + "/queue"
     app = QApplication(sys.argv)
     app.setStyle("fusion")
     ex = Ui()

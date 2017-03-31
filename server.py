@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, url_for, redirect
 import profile
 
 app = Flask(__name__)
+profile_path = os.path.dirname(os.path.abspath(__file__)) + "/config/profile"
 
 
 @app.route('/')
@@ -62,18 +63,25 @@ def active():
     # full_list = profile_manager.load_file()
     list_file = profile_manager.load_file(option="file")
     for item in list_file:
-        if data + ".ini" == item:
+        if data == item:
             if not check_queue():
                 src = os.path.dirname(os.path.abspath(__file__)) + \
                     "/config/profile/" + data + ".ini"
                 dest = os.path.dirname(os.path.abspath(
                     __file__)) + "/queue/work.ini"
-                with open(src, 'r') as fsrc:
-                    with open(dest, 'wb') as fdest:
-                        shutil.copy2(src, dest)
+                # with open(src, 'r') as fsrc:
+                #     with open(dest, 'wb') as fdest:
+                shutil.copy2(src, dest)
                 return url_for('index')
             else:
                 return url_for('index')
+
+
+@app.route('/remove_profile', methods=['POST'])
+def remove_profile():
+    data = request.data.decode('utf8')
+    os.remove(profile_path + "/" + data)
+    return url_for('load_select_profile_page')
 
 
 def check_queue():

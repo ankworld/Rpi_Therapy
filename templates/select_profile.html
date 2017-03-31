@@ -17,9 +17,8 @@
                 <p>ส่วนที่ 2 : {{value[1]}} ครั้ง</p>
                 <p>ความเร็ว : {{value[2]}} %</p>
             </section>
-            <button type="button" name="button" onclick="active(event)">
-            Select
-            </button>
+            <span><button type="button" name="button" value="{{key}}" onclick="active(this)">Select</button></span>
+            <span><button type="button" name="button" value="{{key}}" onclick="remove(this)">Delete</button></span>
         </li>
         {% endfor %}
     </ul>

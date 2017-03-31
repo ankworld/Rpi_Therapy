@@ -24,7 +24,7 @@ class thread_working(threading.Thread):
         controller.motor1.change_duty(float(self.list[2]))
         controller.motor1.ccw_drive()
         while (controller.sensor3.get_value() and
-               controller.sensor4.get_value()):
+               controller.sensor4.get_value())
             pass
         controller.motor1.stop()
         time.sleep(2)
@@ -85,8 +85,8 @@ class thread_status(threading):
         self.name = name
 
         """
-        status : inactive(0), active(1)
-        command : working(0), terminate(1), delete(2)
+        active : inactive(0), active(1)
+        command : work(0), terminate(1), delete(2)
         """
         self.cfg = configparser.ConfigParser()
         self.cfg['status'] = {}
@@ -109,6 +109,7 @@ class thread_terminate(threading):
         self.cfg = configparser.ConfigParser()
 
     def run(self):
+        pill2kill = threading.Event()
         pass
 
 
