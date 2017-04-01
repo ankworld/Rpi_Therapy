@@ -2,7 +2,7 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
-    font-family: 'Clear Sans', Garuda, sans-serif;
+    font-family: sans-serif;
     font-size: 100%;
     word-wrap: break-word;
     margin: 0px auto;

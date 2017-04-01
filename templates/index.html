@@ -10,7 +10,31 @@
         }, 1000);
     </script>
     {% endblock %} {% block header %} {{super()}} {% endblock %} {% block dash_content %}
-    <h1 id='status'>ว่าง</h1> {% endblock %}
+    {% if active == "0" %}
+      <h1 id="idle">ว่าง</h1>
+    {% endif %}
+    {% if active == "1" %}
+    <table>
+      <tr>
+        <td>ส่วนที่ 1 : </td>
+        <td id="active">{{active}}</td>
+      </tr>
+      <tr>
+        <td>ส่วนที่ 2 : </td>
+        <td id="active">{{active}}</td>
+      </tr>
+      <tr>
+        <td>ความเร็ว : </td>
+        <td id="active">{{active}}</td>
+      </tr>
+      <tr>
+        <td>ความคืบหน้า : </td>
+        <td id="success">0 %</td>
+      </tr>
+    </table>
+    <button type="reset" name="button" onclick="cancel()">ยกเลิก</button>
+    {% endif %}
+    {% endblock %}
 
 </body>
 

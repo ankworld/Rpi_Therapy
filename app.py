@@ -41,7 +41,7 @@ class ThreadingTime(QThread):
 
 
 class ThreadingProcess(QThread):
-    update_sig = pyqtSignal(int)
+    update_sig = pyqtSignal('QString')
 
     def __init__(self):
         QThread.__init__(self)
@@ -51,11 +51,17 @@ class ThreadingProcess(QThread):
         self.wait()
 
     def run(self):
+        print("PROCESS RUN")
         while True:
-            with open(working_path + "/process.ini", 'r') as process_file:
-                self.cfg.read_file(process_file)
-            success = self.cfg['process']['success']
-            self.update_sig.emit(success)
+            if os.path.exists(working_path + "/process.ini"):
+                with open(working_path + "/process.ini", 'r') as process_file:
+                    self.cfg.read_file(process_file)
+                success = self.cfg['process']['success']
+                self.update_sig.emit(success)
+            if not(os.path.exists(working_path + "/work.ini")):
+                success = "100"
+                self.update_sig.emit(success)
+            self.sleep(1)
 
 
 class Ui(object):
@@ -84,10 +90,6 @@ class Ui(object):
 
         # Profile control
         self.profile_ctl = profile.Profile()
-
-        # Create Threading
-        self.process_thread = ThreadingProcess()
-        self.time_thread = ThreadingTime()
 
         # initial UI
         self.MainWindow = QMainWindow()
@@ -120,10 +122,10 @@ class Ui(object):
 
         self.ui.pushButton.clicked.connect(self.terminate_thread)
 
-        # self.MainWindow.show()
+        self.MainWindow.show()
 
         self.logger.info("Start System")
-        self.MainWindow.showFullScreen()
+        # self.MainWindow.showFullScreen()
 
     # Power off raspberry pi
     @staticmethod
@@ -138,9 +140,13 @@ class Ui(object):
             self.ui.stackedWidget.setCurrentIndex(0)
             # TODO: Write Command "1" to status.ini
             cfg = configparser.ConfigParser()
-            cfg['status']['command'] = 1
-            with open(working_path + "/status", 'r') as status_file:
-                cfg.write(status_file)
+            if os.path.exists(working_path + "/status.ini"):
+                with open(working_path + "/status.ini", 'r') as status_file:
+                    cfg.read_file(status_file)
+                cfg['status']['command'] = "1"
+                cfg['status']['active'] = "0"
+                with open(working_path + "/status.ini", 'w') as status_file:
+                    cfg.write(status_file)
             # self.cc.stop_all()
 
     # set main page
@@ -173,8 +179,20 @@ class Ui(object):
         if os.path.exists(working_path + "/work.ini"):
             self.ui.stackedWidget.setCurrentIndex(4)
         else:
-            copyfile(self.select_profile, working_path + "/work.ini")
+            print(self.select_profile())
+            copyfile(self.select_profile(), working_path + "/work.ini")
+            if os.path.exists(working_path + "/status.ini"):
+                cfg = configparser.ConfigParser()
+                with open(working_path + "/status.ini", 'r') as process_file:
+                    cfg.read_file(process_file)
+                    cfg['status']['active'] = str(1)
+                    cfg['status']['command'] = str(0)
+                with open(working_path + "/status.ini", 'w') as status_file:
+                    cfg.write(status_file)
             self.ui.stackedWidget.setCurrentIndex(4)
+        # Create Threading
+        self.process_thread = ThreadingProcess()
+        self.time_thread = ThreadingTime()
         self.process_thread.start()
         self.process_thread.update_sig.connect(self.update_process)
         self.time_thread.start()
@@ -216,7 +234,6 @@ class Ui(object):
         self.load_profile_list()
 
     def select_profile(self):
-        # NOTE: If fail change load_file() mode to full
         # load all file in config/profile
         list_file = self.profile_ctl.load_file()
         indexes = self.ui.tbv_profile.selectionModel().selectedRows()
@@ -230,9 +247,10 @@ class Ui(object):
 
     def update_process(self, success):
         # NOTE: If fail change to string
-        self.ui.pg_bar.setValue(success)
-        if success == 100:
-            time.sleep(2)
+        print(success)
+        self.ui.pg_bar.setValue(int(float(success)))
+        if int(float(success)) == 100:
+            time.sleep(0.5)
             self.done()
 
     def update_time(self, time_text):

@@ -1,51 +1,36 @@
 import threading
 import time
-from queue import Queue
-
-print_lock = threading.Lock()
 
 
-def exampleJob(worker):
-    time.sleep(.5)  # pretend to do some work.
-    with print_lock:
-        print(threading.current_thread().name, worker)
+def main():
+    t1_stop = threading.Event()
+    t1 = threading.Thread(target=thread1, args=(1, t1_stop))
 
-# The threader thread pulls an worker from the queue and processes it
-
-
-def threader():
-    while True:
-        # gets an worker from the queue
-        worker = q.get()
-
-        # Run the example job with the avail worker in queue (thread)
-        exampleJob(worker)
-
-        # completed with the job
-        q.task_done()
+    t2_stop = threading.Event()
+    t2 = threading.Thread(target=thread2,  args=(2, t2_stop))
+    t1.start()
+    t2.start()
+    time.sleep(2)
+    # stop the thread2
+    t2_stop.set()
 
 
-q = Queue()
-# how many threads are we going to allow for
-for x in range(10):
-    t = threading.Thread(target=threader)
+def thread1(arg1, stop_event):
+    while(not stop_event.is_set()):
+        print("Before 1")
+        # similar to time.sleep()
+        stop_event.wait(5)
+        print("After 1")
+        pass
 
-    # classifying as a daemon, so they will die when the main dies
-    t.daemon = True
 
-    # begins, must come after daemon definition
-    t.start()
+def thread2(arg1, stop_event):
+    while(not stop_event.is_set()):
+        print("Before 2")
+        stop_event.wait(5)
+        print("After 2")
+        pass
 
-start = time.time()
 
-# 20 jobs assigned.
-for worker in range(20):
-    q.put(worker)
-
-# wait until the thread terminates.
-q.join()
-
-# with 10 workers and 20 tasks, with each task being .5 seconds, then the completed job
-# is ~1 second using threading. Normally 20 tasks with .5 seconds each
-# would take 10 seconds.
-print('Entire job took:', time.time() - start)
+if __name__ == '__main__':
+    main()
