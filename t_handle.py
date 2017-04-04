@@ -10,58 +10,6 @@ controller = controller.Control()
 working_path = os.path.dirname(os.path.abspath(__file__)) + "/queue"
 
 
-class SignalHandler:
-    """
-    The object that will handle signals and stop the worker threads.
-    """
-
-    #: The stop event that's shared by this handler and threads.
-    stopper = None
-
-    #: The pool of worker threads
-    workers = None
-
-    def __init__(self, stopper, workers):
-        self.stopper = stopper
-        self.workers = workers
-
-    def __call__(self, signum, frame):
-        """
-        This will be called by the python signal module
-
-        https://docs.python.org/3/library/signal.html#signal.signal
-        """
-        self.stopper.set()
-
-        for worker in self.workers:
-            worker.join()
-
-        sys.exit(0)
-
-
-class StatusChecker(threading.Thread):
-    """
-    The thread that will check HTTP statuses.
-    """
-
-    #: An event that tells the thread to stop
-    stopper = None
-
-    def __init__(self, worker, stopper):
-        super().__init__()
-        self.worker = worker
-        self.stopper = stopper
-
-    def run(self):
-        self.worker.start()
-        while not self.stopper.is_set():
-            print(self.stopper.is_set())
-            if self.worker.isAlive():
-                time.sleep(0.5)
-            else:
-                self.stopper.set()
-
-
 class thread_working(threading.Thread):
     def __init__(self, threadID, name, stopper):
         threading.Thread.__init__(self)

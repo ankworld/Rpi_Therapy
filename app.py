@@ -122,10 +122,10 @@ class Ui(object):
 
         self.ui.pushButton.clicked.connect(self.terminate_thread)
 
-        self.MainWindow.show()
+        # self.MainWindow.show()
 
         self.logger.info("Start System")
-        # self.MainWindow.showFullScreen()
+        self.MainWindow.showFullScreen()
 
     # Power off raspberry pi
     @staticmethod
