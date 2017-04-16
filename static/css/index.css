@@ -25,7 +25,7 @@ body {
 
 .intro {
     margin: 0;
-    min-width: 200px;
+    min-width: 300px;
     font-size: 16pt;
 }
 
@@ -99,8 +99,21 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-    border-color: #f0ffff;
+    border: 1px solid #00F;
 }
+
+input[type=number] {
+    margin: 0 10px;
+    padding: 5px;
+    border: 1px solid #000;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input[type=number]:focus {
+    border: 1px solid #00F;
+}
+
 
 button[type=button] {
     border: 1px solid #000000;

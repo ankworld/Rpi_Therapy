@@ -17,8 +17,7 @@ class Config(object):
         cfg[section] = {}
         cfg[section]['high_pin'] = options[0]
         cfg[section]['low_pin'] = options[1]
-        cfg[section]['pwm_pin'] = options[2]
-        cfg[section]['freq'] = options[3]
+        cfg[section]['freq'] = options[2]
 
         with open(self.path + '/config/motor.ini', 'w') as configfile:
             cfg.write(configfile)
@@ -73,7 +72,6 @@ class Ui(object):
 
         self.high_pin = 0
         self.low_pin = 0
-        self.pwm_pin = 0
         self.freq = 0
 
         self.window = QMainWindow()
@@ -95,8 +93,6 @@ class Ui(object):
         self.list_used_pin.append(self.uic.highPinM2.text())
         self.list_used_pin.append(self.uic.lowPinM1.text())
         self.list_used_pin.append(self.uic.lowPinM2.text())
-        self.list_used_pin.append(self.uic.pwmPinM1.text())
-        self.list_used_pin.append(self.uic.pwmPinM2.text())
         self.list_used_pin.append(self.uic.input1.text())
         self.list_used_pin.append(self.uic.input2.text())
         self.list_used_pin.append(self.uic.input3.text())
@@ -130,13 +126,10 @@ class Ui(object):
                     self.high_pin = item.text()
                 elif reg_name == "lowPin":
                     self.low_pin = item.text()
-                elif reg_name == "pwmPin":
-                    self.pwm_pin = item.text()
                 elif reg_name == "freqPin":
                     self.freq = item.text()
 
-            list_of_pin = [self.high_pin,
-                           self.low_pin, self.pwm_pin, self.freq]
+            list_of_pin = [self.high_pin, self.low_pin, self.freq]
             Config().write_config_file(section, list_of_pin)
 
     def save_sensor(self):
@@ -182,10 +175,8 @@ class Ui(object):
                         item.setText(str(value[0]))
                     elif reg_name == "lowPin":
                         item.setText(str(value[1]))
-                    elif reg_name == "pwmPin":
-                        item.setText(str(value[2]))
                     elif reg_name == "freqPin":
-                        item.setText(str(value[3]))
+                        item.setText(str(value[2]))
 ##########################################################################
         # Load to sensor section
         section = "Sensor"

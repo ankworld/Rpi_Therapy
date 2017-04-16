@@ -22,7 +22,22 @@ __version__ = '0.3'
 __author__ = 'Anukul Thienkasemsuk (anukul_thienkasemsuk@hotmail.com)'
 
 
-# FIXME: Auto start
+class TheadingWork(QThread):
+    work_signal = pyqtSignal()
+
+    def __init__(self):
+        QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        while True:
+            if os.path.exists(working_path + "/work.ini"):
+                self.work_signal.emit()
+                break
+            self.sleep(1)
+
 
 class ThreadingTime(QThread):
     update_time = pyqtSignal(dt.datetime)
@@ -83,11 +98,6 @@ class Ui(object):
         # add the handlers to the logger
         self.logger.addHandler(self.handler)
 
-        # Control Variable
-        # self.cc = controller.Control()
-        # self.s1_stage = 0
-        # self.s2_stage = 0
-
         # Profile control
         self.profile_ctl = profile.Profile()
 
@@ -106,10 +116,17 @@ class Ui(object):
         # Profile
         self.ui.btn_add_con.clicked.connect(self.add_profile)
         self.ui.btn_del.clicked.connect(self.delete_profile)
+        self.ui.btn_min_1.clicked.connect(self.min_sec1)
+        self.ui.btn_min_2.clicked.connect(self.min_sec2)
+        self.ui.btn_min_3.clicked.connect(self.min_speed)
+        self.ui.btn_plus_1.clicked.connect(self.plus_sec1)
+        self.ui.btn_plus_2.clicked.connect(self.plus_sec2)
+        self.ui.btn_plus_3.clicked.connect(self.plus_speed)
 
         # Manual Control Page
         self.ui.btn_man.clicked.connect(self.set_page_manual)
         self.ui.btn_man_back.clicked.connect(self.set_page_main)
+
         """
         Disable manual for a while
         """
@@ -117,15 +134,20 @@ class Ui(object):
         # self.ui.btn_man_s2.clicked.connect(self.cc_s2)
         # self.ui.spb_speed.valueChanged.connect(self.change_speed)
 
-        # Temp Config Button
+        # Shutdown Button
         self.ui.btn_shutdown.clicked.connect(self.shutdown)
 
+        # Cancel Button
         self.ui.pushButton.clicked.connect(self.terminate_thread)
 
         # self.MainWindow.show()
 
         self.logger.info("Start System")
         self.MainWindow.showFullScreen()
+
+        self.work_thread = TheadingWork()
+        self.work_thread.work_signal.connect(self.set_page_process)
+        self.work_thread.start()
 
     # Power off raspberry pi
     @staticmethod
@@ -138,8 +160,8 @@ class Ui(object):
             self.process_thread.terminate()
             self.time_thread.terminate()
             self.ui.stackedWidget.setCurrentIndex(0)
-            # TODO: Write Command "1" to status.ini
             cfg = configparser.ConfigParser()
+            # Write command = 1 for stop motor
             if os.path.exists(working_path + "/status.ini"):
                 with open(working_path + "/status.ini", 'r') as status_file:
                     cfg.read_file(status_file)
@@ -147,11 +169,13 @@ class Ui(object):
                 cfg['status']['active'] = "0"
                 with open(working_path + "/status.ini", 'w') as status_file:
                     cfg.write(status_file)
-            # self.cc.stop_all()
 
     # set main page
-    # stop all motor and stage to default
     def set_page_main(self):
+        if not self.work_thread.isRunning():
+            self.work_thread = TheadingWork()
+            self.work_thread.work_signal.connect(self.set_page_process)
+            self.work_thread.start()
         self.ui.stackedWidget.setCurrentIndex(0)
 
     # set profile page ans load list
@@ -161,18 +185,51 @@ class Ui(object):
 
     # set add profile page
     def set_page_add_profile(self):
+        self.val_sec1 = 0
+        self.val_sec2 = 0
+        self.val_speed = 50
+        self.ui.lbl_in1.setText(str(self.val_sec1))
+        self.ui.lbl_in2.setText(str(self.val_sec2))
+        self.ui.lbl_in3.setText(str(self.val_speed))
         self.ui.stackedWidget.setCurrentIndex(2)
 
+    # Increase and Decrease
+    def min_sec1(self):
+        if self.val_sec1 > 0:
+            self.val_sec1 -= 1
+        self.ui.lbl_in1.setText(str(self.val_sec1))
+
+    def min_sec2(self):
+        if self.val_sec2 > 0:
+            self.val_sec2 -= 1
+        self.ui.lbl_in2.setText(str(self.val_sec2))
+
+    def min_speed(self):
+        if self.val_speed > 0:
+            self.val_speed -= 5
+        self.ui.lbl_in3.setText(str(self.val_speed))
+
+    def plus_sec1(self):
+        self.val_sec1 += 1
+        self.ui.lbl_in1.setText(str(self.val_sec1))
+
+    def plus_sec2(self):
+        self.val_sec2 += 1
+        self.ui.lbl_in2.setText(str(self.val_sec2))
+
+    def plus_speed(self):
+        if self.val_speed < 100:
+            self.val_speed += 5
+        self.ui.lbl_in3.setText(str(self.val_speed))
+
     def add_profile(self):
-        profile_list = [self.ui.cb_s1.currentText(),
-                        self.ui.cb_s2.currentText()]
-        speed = self.ui.cb_spd.currentText()
+        profile_list = [self.ui.lbl_in1.text(), self.ui.lbl_in2.text()]
+        speed = self.ui.lbl_in3.text()
         self.profile_ctl.add(profile_list, speed)
         self.profile_ctl.write_config()
         self.set_page_profile()
 
     def set_page_manual(self):
-        # self.cc.motor1.change_duty(self.ui.spb_speed.value())
         self.ui.stackedWidget.setCurrentIndex(3)
 
     def set_page_process(self):

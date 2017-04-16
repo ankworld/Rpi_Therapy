@@ -30,20 +30,10 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="1">
+         <item row="1" column="0">
           <widget class="QLineEdit" name="freqPinM1">
            <property name="placeholderText">
             <string>Freq</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLineEdit" name="highPinM1">
-           <property name="inputMask">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string>High Pin</string>
            </property>
           </widget>
          </item>
@@ -54,10 +44,13 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="pwmPinM1">
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="highPinM1">
+           <property name="inputMask">
+            <string/>
+           </property>
            <property name="placeholderText">
-            <string>PWM Pin</string>
+            <string>High Pin</string>
            </property>
           </widget>
          </item>
@@ -103,13 +96,6 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLineEdit" name="pwmPinM2">
-           <property name="placeholderText">
-            <string>PWM Pin</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
           <widget class="QLineEdit" name="freqPinM2">
            <property name="placeholderText">
             <string>Freq</string>
@@ -196,13 +182,9 @@
  <tabstops>
   <tabstop>highPinM1</tabstop>
   <tabstop>lowPinM1</tabstop>
-  <tabstop>pwmPinM1</tabstop>
-  <tabstop>freqPinM1</tabstop>
   <tabstop>saveMotor1</tabstop>
   <tabstop>highPinM2</tabstop>
   <tabstop>lowPinM2</tabstop>
-  <tabstop>pwmPinM2</tabstop>
-  <tabstop>freqPinM2</tabstop>
   <tabstop>saveMotor2</tabstop>
   <tabstop>input1</tabstop>
   <tabstop>input2</tabstop>

@@ -1,5 +1,4 @@
 import os
-import sys
 import profile
 import time
 import threading
@@ -21,92 +20,85 @@ class thread_working(threading.Thread):
         self.profile_manager = profile.Profile()
 
     def run(self):
-        self.process = thread_process(
-            2, "Process", 0)
+        self.process = thread_process(2, "Process", 0)
         self.process.start()
         self.process.join()
         if os.path.exists(working_path + "/work.ini"):
-            self.work_list = self.profile_manager.read_config(working_path +
-                                                              "/work.ini")
+            self.work_list = self.profile_manager.read_config(working_path + "/work.ini")
         print(self.name, "Threading")
         all_round = int(self.work_list[0]) + int(self.work_list[1])
         print("All Round : ", all_round)
-        controller.motor1.change_duty(float(self.work_list[2]))
-        controller.motor1.ccw_drive()
-        while (controller.sensor3.get_value() and
-               controller.sensor4.get_value()):
-            if self.stopper.is_set():
-                controller.motor1.stop()
-                controller.motor2.stop()
-                break
-        controller.motor1.stop()
-        time.sleep(1)
-        print("Thread Doing", self.work_list)
+
         # Loop in section 1
-        for i in range(int(self.work_list[0])):
-            if self.stopper.is_set():
-                controller.motor1.stop()
-                controller.motor2.stop()
-                break
-            finish = forward = backward = False
-            controller.motor1.change_duty(float(self.work_list[2]))
-            controller.motor1.cw_drive()
-            while finish is False:
+        if int(self.work_list[0]) > 0:
+            # controller.motor1.change_duty(float(self.work_list[2]) / 2)
+            controller.motor1.l_drive(float(self.work_list[2]))
+            while (controller.sensor3.get_value() and controller.sensor4.get_value()):
                 if self.stopper.is_set():
                     controller.motor1.stop()
                     controller.motor2.stop()
                     break
-                if not(controller.sensor5.get_value() or
-                       controller.sensor6.get_value()):
-                    if forward is False:
-                        controller.motor1.stop()
-                        time.sleep(1)
-                        # controller.motor1.change_duty(100)
-                        controller.motor1.ccw_drive()
-                        forward = True
-                elif forward and not(controller.sensor3.get_value() or
-                                     controller.sensor4.get_value()):
-                    backward = True
-                finish = forward and backward
-            print("End Round : ", i)
-            self.process = thread_process(
-                2, "Process", ((i + 1) / all_round) * 100)
-            self.process.start()
             controller.motor1.stop()
-            time.sleep(3)
-        # time.sleep(1)
-        controller.motor1.stop()
+            self.stopper.wait(1)
+            print("Thread Doing", self.work_list)
+            for i in range(int(self.work_list[0])):
+                if self.stopper.is_set():
+                    controller.motor1.stop()
+                    controller.motor2.stop()
+                    break
+                finish = forward = backward = False
+                controller.motor1.r_drive(float(self.work_list[2]) / 4)
+                while finish is False:
+                    if self.stopper.is_set():
+                        controller.motor1.stop()
+                        controller.motor2.stop()
+                        break
+                    if not(controller.sensor5.get_value() or controller.sensor6.get_value()):
+                        if forward is False:
+                            controller.motor1.stop()
+                            self.stopper.wait(1)
+                            controller.motor1.l_drive(float(self.work_list[2]))
+                            forward = True
+                    elif forward and not(controller.sensor3.get_value() or
+                                         controller.sensor4.get_value()):
+                        backward = True
+                    finish = forward and backward
+                print("End Round : ", i)
+                self.process = thread_process(
+                    2, "Process", ((i + 1) / all_round) * 100)
+                self.process.start()
+                controller.motor1.stop()
+                self.stopper.wait(3)
+            controller.motor1.stop()
         # Loop in section 2
         if int(self.work_list[1]) > 0:
-            controller.motor2.change_duty(100)
-            controller.motor2.ccw_drive()
-            while (controller.sensor1.get_value()):
+            controller.motor2.r_drive()
+            while controller.sensor1.get_value():
                 if self.stopper.is_set():
                     controller.motor1.stop()
                     controller.motor2.stop()
                     break
             controller.motor2.stop()
-            time.sleep(1)
+            self.stopper.wait(1)
             for i in range(int(self.work_list[1])):
                 if self.stopper.is_set():
                     controller.motor1.stop()
                     controller.motor2.stop()
                     break
                 finish = forward = backward = False
-                # controller.motor2.change_duty(100)
-                controller.motor2.cw_drive()
+                controller.motor2.l_drive()
                 while finish is False:
                     if self.stopper.is_set():
                         controller.motor1.stop()
                         controller.motor2.stop()
                         break
-                    if not(controller.sensor1):
+                    if not controller.sensor1.get_value():
                         if forward is False:
                             controller.motor2.stop()
-                            time.sleep(1)
-                            controller.motor2.ccw_drive()
+                            self.stopper.wait(1)
+                            controller.motor2.r_drive()
                             forward = True
-                    elif forward and not(controller.sensor2.get_value()):
+                    elif forward and not controller.sensor2.get_value():
                         backward = True
                     finish = forward and backward
 
@@ -115,9 +107,9 @@ class thread_working(threading.Thread):
                     2, "Process", ((i + 1) / all_round) * 100)
                 self.process.start()
                 controller.motor2.stop()
-                time.sleep(3)
-            # time.sleep(1)
+                self.stopper.wait(3)
             controller.motor2.stop()
+
         if os.path.exists(working_path + "/work.ini"):
             os.remove(working_path + "/work.ini")
         if os.path.exists(working_path + "/process.ini"):
@@ -155,6 +147,10 @@ class thread_process(threading.Thread):
 
 
 def main():
+    if os.path.exists(working_path + "/work.ini"):
+        os.remove(working_path + "/work.ini")
+    if os.path.exists(working_path + "/process.ini"):
+        os.remove(working_path + "/process.ini")
     last_command = 100
     cfg = configparser.ConfigParser()
     if os.path.exists(working_path + "/status.ini"):

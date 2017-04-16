@@ -16,9 +16,9 @@ class Control(object):
         pin_sensor = cfg.read_config_sensor("Sensor")
 
         self.motor1 = controlcore.Motor(
-            pin_motor1[0], pin_motor1[1], pin_motor1[2], pin_motor1[3])
-        self.motor2 = controlcore.Motor(
-            pin_motor2[0], pin_motor2[1], pin_motor2[2], pin_motor2[3])
+            pin_motor1[0], pin_motor1[1], pin_motor1[2])
+        self.motor2 = controlcore.H_Bridge_Motor(
+            pin_motor2[0], pin_motor2[1], pin_motor2[2])
 
         self.sensor1 = controlcore.Sensor(pin_sensor[0])
         self.sensor2 = controlcore.Sensor(pin_sensor[1])

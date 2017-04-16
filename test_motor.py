@@ -1,18 +1,16 @@
-import controller
-import time
+from myLib import controlcore
+from time import sleep
+
+motor = controlcore.Motor(11, 13, 1000)
+
+dc = 100
 
 
-def main():
-    control = controller.Control()
+for i in range(10):
+    motor.l_drive(dc)
 
-    motor = control.motor1
-    motor.change_duty(50)
-    motor.cw_drive()
-    time.sleep(4)
-    motor.ccw_drive()
-    time.sleep(4)
-    pass
+    sleep(5)
 
+    motor.r_drive(dc)
 
-if __name__ == '__main__':
-    main()
+    sleep(5)
