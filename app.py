@@ -18,7 +18,7 @@ from ui import stack_menu
 This main function of this project
 """
 
-__version__ = '0.3'
+__version__ = '0.5'
 __author__ = 'Anukul Thienkasemsuk (anukul_thienkasemsuk@hotmail.com)'
 
 
@@ -74,7 +74,7 @@ class ThreadingProcess(QThread):
                 success = self.cfg['process']['success']
                 self.update_sig.emit(success)
             if not(os.path.exists(working_path + "/work.ini")):
-                success = "100"
+                success = "0"
                 self.update_sig.emit(success)
             self.sleep(1)
 
@@ -159,6 +159,7 @@ class Ui(object):
         if self.process_thread.isRunning():
             self.process_thread.terminate()
             self.time_thread.terminate()
+            self.work_thread.terminate()
             self.ui.stackedWidget.setCurrentIndex(0)
             cfg = configparser.ConfigParser()
             # Write command = 1 for stop motor
@@ -257,7 +258,7 @@ class Ui(object):
 
     def load_profile_list(self):
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(['File', 'S1', 'S2', 'Speed'])
+        model.setHorizontalHeaderLabels(['File', 'Knee', 'Ankle', 'Speed'])
         self.ui.tbv_profile.setModel(model)
         list_profile_file = self.profile_ctl.load_file()
 
@@ -306,7 +307,7 @@ class Ui(object):
         # NOTE: If fail change to string
         print(success)
         self.ui.pg_bar.setValue(int(float(success)))
-        if int(float(success)) == 100:
+        if int(float(success)) >= 100:
             time.sleep(0.5)
             self.done()
 

@@ -137,11 +137,11 @@ function getWork() {
                 document.getElementsByClassName('dash_section')[0].innerHTML = `
                     <table>
                       <tr>
-                        <td>ส่วนที่ 1 : </td>
+                        <td>หัวเข่า : </td>
                         <td id="active">${section1}</td>
                       </tr>
                       <tr>
-                        <td>ส่วนที่ 2 : </td>
+                        <td>ข้อเท้า : </td>
                         <td id="active">${section2}</td>
                       </tr>
                       <tr>

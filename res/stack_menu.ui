@@ -228,7 +228,7 @@ background : rgb(239, 41, 41)
         <item row="1" column="0">
          <widget class="QLabel" name="lbl_s2">
           <property name="text">
-           <string>Section 2 (times)</string>
+           <string>Ankle (times)</string>
           </property>
          </widget>
         </item>
@@ -242,7 +242,7 @@ background : rgb(239, 41, 41)
         <item row="0" column="0">
          <widget class="QLabel" name="lbl_s1">
           <property name="text">
-           <string>Section 1 (times)</string>
+           <string>Knee (times)</string>
           </property>
          </widget>
         </item>

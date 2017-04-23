@@ -6,15 +6,15 @@
 
     {% block header %} {{super()}} {% endblock %} {% block dash_content %}
     <h1 class="article">Profile</h1>
-    <span>ค้นหาด้วยชื่อ : </span>
-    <span><input class="search_field" type="text" name="search" value="" onkeypress="handleKeyPress(event)"></span>
+    <!-- <span>ค้นหาด้วยชื่อ : </span>
+    <span><input class="search_field" type="text" name="search" value="" onkeypress="handleKeyPress(event)"></span> -->
     <ul class="ul_profile">
         {% for key, value in file.items() %} {% set file_name = key.split('.') %}
         <li class="list_profile">
             <section>
                 <h1>{{file_name[0]}}</h1>
-                <p>ส่วนที่ 1 : {{value[0]}} ครั้ง</p>
-                <p>ส่วนที่ 2 : {{value[1]}} ครั้ง</p>
+                <p>หัวเข่า : {{value[0]}} ครั้ง</p>
+                <p>ข้อเท้า : {{value[1]}} ครั้ง</p>
                 <p>ความเร็ว : {{value[2]}} %</p>
             </section>
             <span><button type="button" name="button" value="{{key}}" onclick="active(this)">Select</button></span>
