@@ -92,13 +92,13 @@ class thread_working(threading.Thread):
                         controller.motor1.stop()
                         controller.motor2.stop()
                         break
-                    if not controller.sensor1.get_value():
+                    if not controller.sensor2.get_value():
                         if forward is False:
                             controller.motor2.stop()
                             self.stopper.wait(1)
                             controller.motor2.r_drive()
                             forward = True
-                    elif forward and not controller.sensor2.get_value():
+                    elif forward and not controller.sensor1.get_value():
                         backward = True
                     finish = forward and backward
 
